@@ -1,0 +1,47 @@
+#include <cstring>
+#include <iostream>
+
+
+Graph::Graph(){
+  vertices = new vertex*[20];
+}
+
+Graph::~Graph(){
+  for(int i = 0; i < vertices->length(); i++){
+    if(vertices[i] != NULL){
+      delete [] vertices[i]->label;
+      delete vertices[i];
+      vertices[i] = NULL;
+    }
+  }
+  delete [] vertices;
+}
+
+int Graph::aVertex(char* label){
+  vertex* newvertex;
+  newvertex->label = label;
+
+  bool placed = false;
+  int index = 0;
+  for(int i = 0; i < vertices->length(); i++){
+    if(vertices[i] == NULL){
+      vertices[i] = newvertex;
+      index = i;
+      placed = true;
+      break;
+    }
+  }
+
+  if(!placed){
+    delete [] newvertex->label;
+    delete newvertex;
+    return 1;
+  }
+  return 0;
+}
+
+int Graph::rVertex(char* label){
+  bool found = false;
+  int index = 0;
+  for(int i = 0; i < vertices->length(); i++){
+    if(vertices[i]->
