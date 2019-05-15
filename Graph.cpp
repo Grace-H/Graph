@@ -5,46 +5,39 @@
 using namespace std;
 
 Graph::Graph(){
-  vertices = new vertex[20];
+  maxsize = 20;
+  vertices = new node[maxsize];
+  cursize = 0;
 }
 
 Graph::~Graph(){
-  for(int i = 0; i < vertices->length(); i++){
-    if(vertices[i] != NULL){
-      delete [] vertices[i]->label;
-      delete vertices[i];
-      vertices[i] = NULL;
-    }
+  for(int i = 0; i < cursize; i++){
+    delete [] vertices[i].label;
   }
   delete [] vertices;
 }
 
 int Graph::aVertex(char* label){
   //check to make sure vertex with same name DNE
-  for(int i = 00; i < vertices->length(); i++){
-    if(vertices[i]->label == label){
+  for(int i = 00; i < cursize; i++){
+    if(strcmp(vertices[i].label, label) == 0){
       return 2;
     }
   }
 
   //create vertex
-  vertex* newvertex;
-  newvertex->label = label;
+  node newnode;
+  newnode.label = label;
 
   //find empty place
-  bool placed = false;
-  for(int i = 0; i < vertices->length(); i++){
-    if(vertices[i] == NULL){
-      vertices[i] = newvertex;
-      placed = true;
-      break;
-    }
+  if(cursize < 20){
+    vertices[cursize] = newnode;
+    cursize++;
   }
-
+  
   //if a place was not found
-  if(!placed){
-    delete [] newvertex->label;
-    delete newvertex;
+  else{
+    delete [] newnode.label;
     return 1;
   }
   
@@ -54,23 +47,26 @@ int Graph::aVertex(char* label){
 int Graph::rVertex(char* label){
   bool found = false;
   int index = 0;
-  for(int i = 0; i < vertices->length(); i++){
-    if(vertices[i]->label == label){
+  for(int i = 0; i < cursize; i++){
+    //shift all left if found
+    if(found == true){
+      vertices[i - 1] = vertices[i];
+      for(int j = 0; j < cursize; j++){
+	adj[i][j - 1] = adj[i][j];
+	adj[i - 1][j] = adj[i][j];
+      }
+    }
+    else if(vertices[i].label == label){
       found = true;
       index = i;
-      delete [] vertices[i]->label;
-      delete vertices[i];
-      vertices[i] = NULL;
-      break;
+      delete [] vertices[i].label;
     }
   }
   if(!found){
     return 1;
   }
-  //clear rows in adjacency table
-  for(int i = 0; i < adj->length(); i++){
-    adj[20][i] = 0;
-    adj[i][20] = 0;
+  else{
+    cursize--;
   }
   return 0;
 }
@@ -82,12 +78,12 @@ int Graph::aEdge(char* label1, char* label2, int weight){
   int vertex2;
 
   //find both vertices' indices
-  for(int i = 0; i < vertices->length(); i++){
-    if(vertices[i] == label1){
+  for(int i = 0; i < cursize; i++){
+    if(strcmp(vertices[i].label, label1) == 0){
       vertex1 = i;
       found1 = true;
     }
-    else if(vertices[i] == label2){
+    else if(strcmp(vertices[i].label, label2) == 0){
       vertex2 = i;
       found2 == true;
     }
@@ -104,18 +100,19 @@ int Graph::aEdge(char* label1, char* label2, int weight){
 }
 
 int Graph::rEdge(char* label1, char* label2){
+  cout << label1 << ", " << label2 << endl;
   bool found1 = false;
   bool found2 = false;
   int vertex1;
   int vertex2;
 
   //find both vertices' indices
-  for(int i = 0; i < vertices->length(); i++){
-    if(vertices[i] == label1){
+  for(int i = 0; i < cursize; i++){
+    if(strcmp(vertices[i].label, label1) == 0){
       vertex1 = i;
       found1 = true;
     }
-    else if(vertices[i] == label2){
+    else if(strcmp(vertices[i].label, label2) == 0){
       vertex2 = i;
       found2 == true;
     }
@@ -133,23 +130,19 @@ int Graph::rEdge(char* label1, char* label2){
 
 int Graph::showTable(){
   //print out labels across top
-  cout << "          ";
-  for(int i = 0; i < vertices->length(); i++){
-    if(vertices[i] != NULL){
-      cout << vertices[i]->label << "   ";
-    }
+  cout << "     ";
+  for(int i = 0; i < cursize; i++){
+    cout << vertices[i].label << "   ";
   }
   cout << endl;
 
   //print out each row
-  for(int i = 0; i < adj->length(); i++){
-    if(vertices[i] != NULL){
-      cout << vertices[i]->label << " " << endl;
-      for(int j = 0; j < ajd[0]->length(); j++){
-	if(vertices[j] != NULL){
-	  cout << adj[i][j] << "     " << endl;
-	}
-      }
+  for(int i = 0; i < cursize; i++){
+    cout << vertices[i].label << " ";
+    for(int j = 0; j < cursize; j++){
+      cout << adj[i][j] << "     ";
     }
+    cout << endl;
   }
+  cout << endl;
 }

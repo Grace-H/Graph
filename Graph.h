@@ -3,7 +3,7 @@
 
 using namespace std;
 
-struct vertex{
+struct node{
   char* label;
   bool visit;
 };
@@ -19,5 +19,7 @@ class Graph{
   int showTable();
  private:
   int adj[20][20];
-  vertex* vertices;
+  node* vertices;
+  int cursize;
+  int maxsize;
 };

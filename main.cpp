@@ -40,7 +40,7 @@ int main(){
   cout << "note: commands do not have to be uppercase" << endl;
   
   //keep asking for command until user asks to quit
-  book go = true;
+  bool go = true;
   while(go){
     //get input
     cout << "'ADD' 'REMOVE' 'QUIT' or print adjacency 'TABLE'?" << endl;
@@ -109,6 +109,7 @@ int main(){
     }
     else if(strcmp(tablestr, input) == 0){
       //call table function of graph
+      graph->showTable();
     }
     else{
       cout << "not an option" << endl;
@@ -166,7 +167,9 @@ int addEdge(Graph* graph){
   
   char* weightstr = new char[256];
   cout << "Enter weight of edge: " << endl;
-  int weight = atoi(cin.get(weightstr, 256));
+  cin.get(weightstr, 256);
+  cin.get();
+  int weight = atoi(weightstr);
   delete weightstr;
   
   //call add
