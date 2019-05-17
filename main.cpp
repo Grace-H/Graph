@@ -118,6 +118,7 @@ int main(){
   return 0;
 }
 
+//add vertex: asks for label and passes to graph
 int addVertex(Graph* graph){
   char* label = new char[256];
   cout << "Enter label: " << endl;
@@ -138,6 +139,7 @@ int addVertex(Graph* graph){
   return 0;
 }
 
+//remove vertex: asks for label and passes to graph
 int removeVertex(Graph* graph){
   char* label = new char[256];
   cout << "Enter label: " << endl;
@@ -154,16 +156,20 @@ int removeVertex(Graph* graph){
   return 0;
 }
 
+//add edge: asks for labels & weight, passes to graph
 int addEdge(Graph* graph){
   char* label1 = new char[256];
   cout << "Enter label of first vertex: " << endl;
   cin.get(label1, 256);
   cin.get();
+
+  cout << "addEdge(): First label: " << label1 << endl;
   
   char* label2 = new char[256];
   cout << "Enter label of second: " << endl;
   cin.get(label2, 256);
   cin.get();
+  cout << "addEdge(): 2nd label: " << label2 << endl;
   
   char* weightstr = new char[256];
   cout << "Enter weight of edge: " << endl;
@@ -179,12 +185,16 @@ int addEdge(Graph* graph){
   if(error == 1){
     cout << "One or both vertices does not exist." << endl;
   }
+  else if(error == 2){
+    cout << "Vertex cannot be connected to itself" << endl;
+  }
   delete [] label1;
   delete [] label2;
   
   return 0;
 }
 
+//remove edge: asks for labels and passes to graph
 int removeEdge(Graph* graph){
   char* label1 = new char[256];
   cout << "Enter label of first vertex: " << endl;
