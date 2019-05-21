@@ -19,6 +19,86 @@ Graph::~Graph(){
   delete [] vertices;
 }
 
+//returns shortest path between two nodes
+//returns -2 if one node doesn't exist
+//returns -1 if there is no complete path
+int Graph::findPath(char* label1, char* label2){
+  int s = findNode(label1); //start node
+  int e = findNode(label2); //end node
+
+  //if either node doesn't exist
+  if(s < 0 || e < 0){
+    return -2;
+  }
+  
+  //make all nodes unvisited and set distances
+  //infinity is represented as -1
+  for(int i = 0; i < cursize; i++){
+    if(i == s){
+      vertices[i].d = 0;
+    }
+    else{
+      vertices[i].d = -1;
+    }
+    vertices[i].visit = false;
+  }
+
+  int cur = s;
+  bool go = true;
+  while(go){
+    for(int i = 0; i < cursize; i++){
+      cout << adj[cur][i] << endl;
+      if(adj[cur][i] != 0 && vertices[i].visit != true){
+	cout << "nodes are connected" << endl;
+	if((adj[cur][i] + vertices[cur].d) <= vertices[i].d || vertices[i].d == -1){
+	  cout << "changing path" << endl;
+	  vertices[i].d = adj[cur][i] + vertices[cur].d;
+	}
+      }
+    }
+    vertices[cur].visit = true;
+    if(vertices[e].visit){
+      go = false;
+      return vertices[e].d;
+    }
+    //find node with lowest d and make cur
+    int lowest = -1;
+    int index = -1;
+    for(int i = 0; i < cursize; i++){
+      cout << lowest << endl;
+      if(vertices[i].visit == false && vertices[i].d > 0 && lowest == -1){
+	lowest = vertices[i].d;
+	index = i;
+	cout << vertices[i].label << " is the first unvisited node with a distance greater than 0" << endl;
+      }
+      else if(vertices[i].visit == false && vertices[i].d > 0 && vertices[i].d < lowest){
+	lowest = vertices[i].d;
+	index = i;
+	cout << vertices[i].label << " has a smaller d than " << lowest << endl;
+      }
+    }
+    if(index == -1){
+      cout << "index is -1" << endl;
+      go = false;
+      return -1;
+    }
+    cout << "going to next node at index = " << index << endl;
+    cur = index;
+  }
+  return -1;
+}
+
+//returns index of a mode
+//-1 if doesn't exist
+int Graph::findNode(char* label){
+  for(int i = 0; i < cursize; i++){
+    if(strcmp(label, vertices[i].label) == 0){
+      return i;
+    }
+  }
+  return -1;
+}
+
 //add a vertex to the list using label
 //add row to adj table
 int Graph::aVertex(char* label){
@@ -86,6 +166,7 @@ int Graph::rVertex(char* label){
 
 //add edge: takes the labels for two vertices and connects
 //them in adjacency table using weight
+//returns 1 for vertex DNE, 2 for same vertex, 3 for weight is invalid
 int Graph::aEdge(char* label1, char* label2, int weight){
   bool found1 = false;
   bool found2 = false;
@@ -112,6 +193,11 @@ int Graph::aEdge(char* label1, char* label2, int weight){
       return 2;
     }
 
+    //return 3 if the weight is <= 0
+    if(weight <= 0){
+      return 3;
+    }
+    
     adj[vertex1][vertex2] = weight;
     return 0;
   }

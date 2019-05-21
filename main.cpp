@@ -11,6 +11,7 @@
 
 using namespace std;
 
+int findPath(Graph* graph);
 int addVertex(Graph* graph);
 int removeVertex(Graph* graph);
 int addEdge(Graph* graph);
@@ -18,6 +19,7 @@ int removeEdge(Graph* graph);
 
 int main(){
   //commands
+  char* pathstr = new char[20];
   char* addstr = new char[20];
   char* removestr = new char[20];
   char* tablestr = new char[20];
@@ -25,6 +27,7 @@ int main(){
   char* edgestr = new char[20];
   char* quitstr = new char[20];
 
+  strcpy(pathstr, "PATH");
   strcpy(addstr, "ADD");
   strcpy(removestr, "REMOVE");
   strcpy(tablestr, "TABLE");
@@ -43,7 +46,7 @@ int main(){
   bool go = true;
   while(go){
     //get input
-    cout << "'ADD' 'REMOVE' 'QUIT' or print adjacency 'TABLE'?" << endl;
+    cout << "'ADD', 'REMOVE', 'QUIT', find shortest 'PATH', or print adjacency 'TABLE'?" << endl;
     cin.get(input, 256);
     cin.get();
 
@@ -98,8 +101,14 @@ int main(){
 	cout << "not an option" << endl;
       }
     }
+    //find shortest path
+    else if(strcmp(pathstr, input) == 0){
+      findPath(graph);
+    }
+    //quit
     else if(strcmp(quitstr, input) == 0){
       go = false;
+      delete [] pathstr;
       delete [] addstr;
       delete [] removestr;
       delete [] vertexstr;
@@ -107,14 +116,44 @@ int main(){
       delete [] quitstr;
       delete [] tablestr;
     }
+    //print adj table
     else if(strcmp(tablestr, input) == 0){
       //call table function of graph
       graph->showTable();
     }
+    //not a command
     else{
       cout << "not an option" << endl;
     }
   }
+  return 0;
+}
+
+//find shortest path
+int findPath(Graph* graph){
+  char* label1 = new char[256];
+  cout << "Enter label of first vertex: " << endl;
+  cin.get(label1, 256);
+  cin.get();
+  
+  char* label2 = new char[256];
+  cout << "Enter label of second: " << endl;
+  cin.get(label2, 256);
+  cin.get();
+
+  int distance = graph->findPath(label1, label2);
+  if(distance == -2){
+    cout << "One or both vertices did not exist" << endl;
+  }
+  else if(distance == -1){
+    cout << "There is not a complete path between the two nodes" << endl;
+  }
+  else{
+    cout << "Shortest distance: " << distance << endl;
+  }
+
+  delete [] label1;
+  delete [] label2;
   return 0;
 }
 
@@ -181,13 +220,17 @@ int addEdge(Graph* graph){
   //call add
   int error = graph->aEdge(label1, label2, weight);
   
-  //if equals 1
+  //process error
   if(error == 1){
-    cout << "One or both vertices does not exist." << endl;
+    cout << "One or both vertices does not exist" << endl;
   }
   else if(error == 2){
     cout << "Vertex cannot be connected to itself" << endl;
   }
+  else if(error == 3){
+    cout << "Weight must be greater than 0" << endl;
+  }
+  
   delete [] label1;
   delete [] label2;
   

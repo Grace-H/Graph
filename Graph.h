@@ -14,7 +14,7 @@ class Graph{
  public:
   Graph();                                           //constructor
   ~Graph();                                          //destructor
-  int findPath(char* label, char* label);            //use Dijkstra's algorithm to find shortest path
+  int findPath(char* label1, char* label2);          //use Dijkstra's algorithm to find shortest path
   int findNode(char* label);                         //finds a vertex using label
   int aVertex(char* label);                          //add a vertex
   int rVertex(char* label);                          //remove a vertex
