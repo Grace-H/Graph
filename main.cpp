@@ -201,14 +201,11 @@ int addEdge(Graph* graph){
   cout << "Enter label of first vertex: " << endl;
   cin.get(label1, 256);
   cin.get();
-
-  cout << "addEdge(): First label: " << label1 << endl;
   
   char* label2 = new char[256];
   cout << "Enter label of second: " << endl;
   cin.get(label2, 256);
   cin.get();
-  cout << "addEdge(): 2nd label: " << label2 << endl;
   
   char* weightstr = new char[256];
   cout << "Enter weight of edge: " << endl;

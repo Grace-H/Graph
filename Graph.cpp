@@ -22,6 +22,7 @@ Graph::~Graph(){
 //returns shortest path between two nodes
 //returns -2 if one node doesn't exist
 //returns -1 if there is no complete path
+//uses Dijkstra's algorithm learned from https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 int Graph::findPath(char* label1, char* label2){
   int s = findNode(label1); //start node
   int e = findNode(label2); //end node
@@ -43,24 +44,27 @@ int Graph::findPath(char* label1, char* label2){
     vertices[i].visit = false;
   }
 
+  //visit all nodes connected to current node and calculate d
   int cur = s;
   bool go = true;
   while(go){
     for(int i = 0; i < cursize; i++){
       cout << adj[cur][i] << endl;
       if(adj[cur][i] != 0 && vertices[i].visit != true){
-	cout << "nodes are connected" << endl;
 	if((adj[cur][i] + vertices[cur].d) <= vertices[i].d || vertices[i].d == -1){
-	  cout << "changing path" << endl;
 	  vertices[i].d = adj[cur][i] + vertices[cur].d;
 	}
       }
     }
+    //mark current as visited
     vertices[cur].visit = true;
+
+    //if this is the final node
     if(vertices[e].visit){
       go = false;
       return vertices[e].d;
     }
+    
     //find node with lowest d and make cur
     int lowest = -1;
     int index = -1;
@@ -69,22 +73,21 @@ int Graph::findPath(char* label1, char* label2){
       if(vertices[i].visit == false && vertices[i].d > 0 && lowest == -1){
 	lowest = vertices[i].d;
 	index = i;
-	cout << vertices[i].label << " is the first unvisited node with a distance greater than 0" << endl;
       }
       else if(vertices[i].visit == false && vertices[i].d > 0 && vertices[i].d < lowest){
 	lowest = vertices[i].d;
 	index = i;
-	cout << vertices[i].label << " has a smaller d than " << lowest << endl;
       }
     }
+    //if there are no unvisited nodes, there is no path
     if(index == -1){
-      cout << "index is -1" << endl;
       go = false;
       return -1;
     }
-    cout << "going to next node at index = " << index << endl;
+    
     cur = index;
   }
+  //no path
   return -1;
 }
 
@@ -103,7 +106,7 @@ int Graph::findNode(char* label){
 //add row to adj table
 int Graph::aVertex(char* label){
   //check to make sure vertex with same name DNE
-  for(int i = 00; i < cursize; i++){
+  for(int i = 0; i < cursize; i++){
     if(strcmp(vertices[i].label, label) == 0){
       return 2;
     }
@@ -121,7 +124,6 @@ int Graph::aVertex(char* label){
   
   //if a place was not found
   else{
-    delete [] newnode.label;
     return 1;
   }
   
@@ -227,6 +229,7 @@ int Graph::rEdge(char* label1, char* label2){
   //add weight to table
   if(found1 && found2){
     adj[vertex1][vertex2] = 0;
+    return 0;
   }
   //if vertices did not exist
   return 1;
@@ -235,7 +238,7 @@ int Graph::rEdge(char* label1, char* label2){
 //show table: print table in grid
 int Graph::showTable(){
   //print out labels across top
-  cout << "     ";
+  cout << "   ";
   for(int i = 0; i < cursize; i++){
     cout << vertices[i].label << "     ";
   }
